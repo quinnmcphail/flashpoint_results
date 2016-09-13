@@ -1,0 +1,83 @@
+doctype html
+html(lang='en')
+  head
+    // Required meta tags always come first
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(http-equiv='x-ua-compatible', content='ie=edge')
+    title Flashpoint Race Timing Results
+    // Bulma CSS
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.css')
+  body
+    .container.is-fluid
+      .columns.has-text-centered
+        .column.is-three-quarters
+          .content.is-large
+            marquee(direction="up" style="height: 100vh;").has-text-centered
+              table(id='results').table
+                thead
+                  tr
+                    th Place
+                    th Bib
+                    th Name
+                    th Age Group
+                    th Total Time
+                tbody
+                  tr
+        .column
+          .card(style='height:100vh;').is-fullwidth
+            .card-image
+              figure.image
+                img(src='images/logo.png', alt='')
+            .card-content
+              .content
+                h1.eventName
+    // jQuery
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.0.0/jquery.min.js', integrity='sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY', crossorigin='anonymous')
+    script.
+      window.onload = resultReq();
+      window.onload = setInterval(resultReq,10000);
+      window.onload = eventNameReq();
+      window.onload = setInterval(eventNameReq,10000);
+
+      function resultReq(){
+        var request = new XMLHttpRequest();
+        var response = '';
+        request.onreadystatechange = function(){
+          if(request.readyState === 4){
+            $('#results tbody tr').html('');
+            var i = 1;
+            response = JSON.parse(request.responseText);
+            response.forEach(function(result){
+              if(result.AgeGroupPlace === 1){
+              $('#results tr:last').after('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><first style="background-color: rgba(201,137,16,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</first> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              console.log('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><first style="background-color: rgba(201,137,16,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</first> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              }else if(result.AgeGroupPlace === 2){
+              $('#results tr:last').after('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><second style="background-color: rgba(168,168,168,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</second> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              console.log('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><second style="background-color: rgba(168,168,168,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</second> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              }else if(result.AgeGroupPlace === 3){
+              $('#results tr:last').after('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><third style="background-color: rgba(150,90,56,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</third> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              console.log('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td><third style="background-color: rgba(150,90,56,.3);border-radius:25px;padding:6px;">'+result.AgeGroupPlace+'</third> '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              }else{
+              $('#results tr:last').after('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td>'+result.AgeGroupPlace+' '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              console.log('<tr><td>'+i+'</td>'+'<td>'+result.Bib+'</td>'+'<td>'+result.FirstName+' '+result.LastName+'</td>'+'<td>'+result.AgeGroupPlace+' '+result.AgeGroup+'</td>'+'<td>'+result.TotalTime+'</td></tr>');
+              }
+              i++;
+            });
+          }
+        };
+      request.open('GET','/results');
+      request.send();
+      }
+      function eventNameReq(){
+        var request = new XMLHttpRequest();
+        request.onreadystatechange = function(){
+          if(request.readyState === 4){
+            $('.eventName').html('');
+            $('.eventName').html(request.responseText);
+          }
+        };
+        request.open('GET','/currentEvent');
+        request.send();
+        //devModeReq();
+      }
